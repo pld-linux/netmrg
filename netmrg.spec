@@ -1,12 +1,12 @@
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl):	Monitor sieci u¿ywaj±cy PHP, MySQL i RRDtool
 Name:		netmrg
-Version:	0.16
-Release:	0.5
+Version:	0.18.2
+Release:	1
 License:	MIT
 Group:		Applications/Networking
 Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
-# Source0-md5:	8de8818abace73940d3cf4eb10f89fcc
+# Source0-md5:	fc0f13c0a73d0f98fcd42608257f225a
 Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
