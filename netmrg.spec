@@ -45,9 +45,11 @@ wykresy przedstawiaj±ce dowolne parametry sieci.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_wwwrootdir}
+
+%{__make} install \ 
+	DESTDIR=$RPM_BUILD_ROOT
+
 install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
 install -D %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/%{name}
 mv -f $RPM_BUILD_ROOT/var/www/%{name} $RPM_BUILD_ROOT%{_wwwrootdir}/%{name}
@@ -89,10 +91,12 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc %{_docdir}/%{name}-%{version}
-%{_mandir}/*/*
 %attr(640,root,root) %{_sysconfdir}/cron.d/netmrg
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/netmrg.xml
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
+%attr(755,root,root) %{_bindir}/editrrd.pl
+%attr(755,root,root) %{_bindir}/netmrg_cron.sh
+%attr(755,root,root) %{_bindir}/netmrg-gatherer
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/db
 %dir %{_datadir}/%{name}/images
@@ -116,8 +120,6 @@ fi
 %attr(700,http,http) %{_pkglibdir}/rrd/*
 %attr(770,http,http) %dir /var/log/netmrg
 %attr(660,http,http) /var/log/netmrg/*
-%attr(755,root,root) %{_bindir}/editrrd.pl
-%attr(755,root,root) %{_bindir}/netmrg_cron.sh
-%attr(755,root,root) %{_bindir}/netmrg-gatherer
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
+%{_mandir}/*/*
