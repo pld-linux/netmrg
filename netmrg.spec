@@ -48,29 +48,41 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_wwwrootdir}
-install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/netrmg.conf
-install -D %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/netmrg
-mv -f $RPM_BUILD_ROOT/var/www/netmrg $RPM_BUILD_ROOT%{_wwwrootdir}/netmrg
-touch $RPM_BUILD_ROOT/var/log/netmrg/lastrun.err
-touch $RPM_BUILD_ROOT/var/log/netmrg/lastrun.log
-touch $RPM_BUILD_ROOT/var/log/netmrg/runtime
+install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
+install -D %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/%{name}
+mv -f $RPM_BUILD_ROOT/var/www/%{name} $RPM_BUILD_ROOT%{_wwwrootdir}/%{name}
+touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.err
+touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.log
+touch $RPM_BUILD_ROOT/var/log/%{name}/runtime
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
+if [ -f /etc/httpd/httpd.conf ] && ! grep -q "^Include.*%{name}.conf" /etc/httpd/httpd.conf; then
+	echo "Include /etc/httpd/%{name}.conf" >> /etc/httpd/httpd.conf
+elif [ -d /etc/httpd/httpd.conf ]; then
+	mv -f /etc/httpd/%{name}.conf /etc/httpd/httpd.conf/99_%{name}.conf
+fi
 if [ -f /var/lock/subsys/httpd ]; then
 	/etc/rc.d/init.d/httpd restart 1>&2
 fi
-echo "Before first run read /usr/share/doc/netmrg-0.13/INSTAL how to put
-	/usr/share/netmrg/db/netmrg.mysql in your mysql server"
+echo "Before first run read /usr/share/doc/%{name}-%{version}/INSTALL how to put
+/usr/share/netmrg/db/netmrg.mysql in your mysql server"
 
 
 %preun
-if [ "$1" = 0 ]
-then
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd restart 1>&2
+if [ "$1" = "0" ]; then
+	umask 027
+	if [ -d /etc/httpd/httpd.conf ]; then
+		rm -f /etc/httpd/httpd.conf/99_%{name}.conf
+	else
+		grep -v "^Include.*%{name}.conf" /etc/httpd/httpd.conf > \
+			etc/httpd/httpd.conf.tmp
+		mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
+		if [ -f /var/lock/subsys/httpd ]; then
+			/usr/sbin/apachectl restart 1>&2
+		fi
 	fi
 fi
 
@@ -80,7 +92,7 @@ fi
 %{_mandir}/*/*
 %attr(640,root,root) %{_sysconfdir}/cron.d/netmrg
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/netmrg.xml
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/httpd.conf/netrmg.conf
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/db
 %dir %{_datadir}/%{name}/images
