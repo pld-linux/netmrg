@@ -30,8 +30,10 @@ Based on RRDTOOL, the best of open source graphing systems, NetMRG is
 capable of creating graphs of any parameter of your network.
 
 %description -l pl
-NetMGR s³u¿y do monitorowania sieci, raportowania i kre¶lenia
-wykresów.
+NetMRG s³u¿y do monitorowania sieci, raportowania i kre¶lenia
+wykresów. Jest on oparty na RRDTOOL, najlepszym spo¶ród systemów
+graficznych o dostêpnym kodzie ¼ród³owym. NetMRG potrafi tworzyæ
+wykresy przedstawiaj±ce dowolne parametry sieci.
 
 %prep
 %setup -q
