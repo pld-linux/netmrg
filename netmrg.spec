@@ -1,18 +1,20 @@
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl):	Monitor sieci u¿ywaj±cy PHP, MySQL i RRDtool
 Name:		netmrg
-Version:	0.13
-Release:	0.1
+Version:	0.16
+Release:	0.5
 License:	MIT
 Group:		Applications/Networking
 Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
-# Source0-md5:	52dab94b707e08531baac3a8d4164ff5
+# Source0-md5:	8de8818abace73940d3cf4eb10f89fcc
 Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
 URL:		http://www.netmrg.net/
 BuildRequires:	mysql-devel
 BuildRequires:	libxml2-devel
+BuildRequires:	rrdtool-devel
+BuildRequires:	net-snmp-devel
 PreReq:		webserver
 Requires:	libxml2
 Requires:	rrdtool
@@ -47,8 +49,7 @@ wykresy przedstawiaj±ce dowolne parametry sieci.
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_wwwrootdir}
 
-%{__make} install \ 
-	DESTDIR=$RPM_BUILD_ROOT
+%{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
 install -D %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/%{name}
@@ -94,9 +95,9 @@ fi
 %attr(640,root,root) %{_sysconfdir}/cron.d/netmrg
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/netmrg.xml
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
-%attr(755,root,root) %{_bindir}/editrrd.pl
 %attr(755,root,root) %{_bindir}/netmrg_cron.sh
 %attr(755,root,root) %{_bindir}/netmrg-gatherer
+%attr(755,root,root) %{_bindir}/rrdedit
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/db
 %dir %{_datadir}/%{name}/images
