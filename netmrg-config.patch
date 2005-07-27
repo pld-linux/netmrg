@@ -1,11 +1,19 @@
---- netmrg-0.13/etc/netmrg.xml.in.fix	2004-02-17 08:04:44.513855672 +0100
-+++ netmrg-0.13/etc/netmrg.xml.in	2004-02-17 08:05:53.366388496 +0100
-@@ -11,7 +11,7 @@
+--- netmrg/etc/netmrg.xml.in.fix	2005-07-27 08:13:57.479439376 +0200
++++ netmrg/etc/netmrg.xml.in	2005-07-27 08:15:54.785606128 +0200
+@@ -14,7 +14,7 @@
  		<runtimefile>@localstatedir@/log/netmrg/runtime</runtimefile>
  		<libexec>@libexecdir@/netmrg</libexec>
  		<rrds>@localstatedir@/lib/netmrg/rrd</rrds>
 -		<webfileroot>@localstatedir@/www/netmrg</webfileroot>
-+		<webfileroot>/home/services/httpd/netmrg</webfileroot>
++		<webfileroot>@datadir@/netmrg/webfiles/netmrg</webfileroot>
+ 		<locale>@datadir@/netmrg/locale</locale>
  	</paths>
  	<threads>
- 		<count>5</count>
+@@ -35,6 +35,6 @@
+ 		<syslog_facility>LOG_DAEMON</syslog_facility>
+ 	</logging>
+ 	<rrdtool>
+-		<version>1.0</version>
++		<version>1.2.11</version>
+ 	</rrdtool>
+ </netmrg>
