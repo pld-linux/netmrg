@@ -1,12 +1,14 @@
+%define		snap	050727
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl):	Monitor sieci u¿ywaj±cy PHP, MySQL i RRDtool
 Name:		netmrg
 Version:	0.18.2
-Release:	1
+Release:	1.%{snap}.1
 License:	MIT
 Group:		Applications/Networking
-Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
-# Source0-md5:	fc0f13c0a73d0f98fcd42608257f225a
+#Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
+Source0:	http://mieszkancy.ds.pg.gda.pl/~luzik/%{name}-%{snap}.tar.gz
+# Source0-md5:	e4baf3664aad402d6116fd3863a7d856
 Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
@@ -24,7 +26,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_pkglibdir		/var/lib/%{name}
 %define		_wwwuser		http
 %define		_wwwgroup		http
-%define		_wwwrootdir		/home/services/httpd
+%define		_wwwrootdir		%{_datadir}/%{name}/webfiles
 
 %description
 NetMRG is a tool for network monitoring, reporting, and graphing.
@@ -38,7 +40,7 @@ graficznych o dostêpnym kodzie ¼ród³owym. NetMRG potrafi tworzyæ
 wykresy przedstawiaj±ce dowolne parametry sieci.
 
 %prep
-%setup -q
+%setup -q -n %{name}
 %patch0 -p1
 
 %build
@@ -70,6 +72,9 @@ fi
 if [ -f /var/lock/subsys/httpd ]; then
 	/etc/rc.d/init.d/httpd restart 1>&2
 fi
+if [ -f /var/lock/subsys/crond ]; then
+	/etc/rc.d/init.d/crond restart 1>&2
+fi
 echo "Before first run read /usr/share/doc/%{name}-%{version}/INSTALL how to put
 /usr/share/netmrg/db/netmrg.mysql in your mysql server"
 
@@ -95,27 +100,9 @@ fi
 %attr(640,root,root) %{_sysconfdir}/cron.d/netmrg
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/netmrg.xml
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
-%attr(755,root,root) %{_bindir}/netmrg_cron.sh
 %attr(755,root,root) %{_bindir}/netmrg-gatherer
 %attr(755,root,root) %{_bindir}/rrdedit
-%dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/db
-%dir %{_datadir}/%{name}/images
-%{_datadir}/%{name}/*/*
-%dir %{_wwwrootdir}/netmrg
-%dir %{_wwwrootdir}/netmrg/include
-%dir %{_wwwrootdir}/netmrg/lib
-%dir %{_wwwrootdir}/netmrg/webfiles
-%dir %{_wwwrootdir}/netmrg/webfiles/images
-%dir %{_wwwrootdir}/netmrg/webfiles/images/default
-%dir %{_wwwrootdir}/netmrg/webfiles/include
-%dir %{_wwwrootdir}/netmrg/webfiles/img
-%{_wwwrootdir}/netmrg/include/config.php
-%{_wwwrootdir}/netmrg/*/*.php
-%{_wwwrootdir}/netmrg/*/*.ico
-%{_wwwrootdir}/netmrg/webfiles/images/default/*
-%{_wwwrootdir}/netmrg/webfiles/img/*
-%{_wwwrootdir}/netmrg/webfiles/include/netmrg.css
+%{_datadir}/%{name}
 %dir %{_pkglibdir}
 %attr(700,http,http) %dir %{_pkglibdir}/rrd
 %attr(700,http,http) %{_pkglibdir}/rrd/*
