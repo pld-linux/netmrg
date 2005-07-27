@@ -1,1 +1,2 @@
-*/5 * * * *	http	bash -c "if [ ! -f /var/log/netmrg/lockfile ]; then /usr/bin/netmrg-gatherer; fi"
+# vim:syn=crontab
+*/5 * * * *	http	[ -f /var/log/netmrg/lockfile ] && /usr/bin/netmrg-gatherer
