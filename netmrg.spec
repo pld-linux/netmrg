@@ -46,7 +46,8 @@ wykresy przedstawiaj±ce dowolne parametry sieci.
 
 %build
 install /usr/share/automake/config.* .
-%configure
+%configure \
+	--with-snmp-lib-dir=%{_libdir}
 %{__make}
 
 %install
