@@ -1,4 +1,5 @@
-%define		snap	050727
+%define		snap	051123
+%define		snapd	2005.11.23
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl):	Monitor sieci u¿ywaj±cy PHP, MySQL i RRDtool
 Name:		netmrg
@@ -7,8 +8,8 @@ Release:	1.%{snap}.3
 License:	MIT
 Group:		Applications/Networking
 #Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
-Source0:	http://mieszkancy.ds.pg.gda.pl/~luzik/%{name}-%{snap}.tar.gz
-# Source0-md5:	e4baf3664aad402d6116fd3863a7d856
+Source0:	http://www.netmrg.net/download/snapshot/%{name}-%{snapd}.tar.gz
+# Source0-md5:	f122132e76cbe10e259bcd8fc4ab84d0
 Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
@@ -41,11 +42,17 @@ graficznych o dostêpnym kodzie ¼ród³owym. NetMRG potrafi tworzyæ
 wykresy przedstawiaj±ce dowolne parametry sieci.
 
 %prep
-%setup -q -n %{name}
+%setup -q -n %{name}-%{snapd}
 %patch0 -p1
 
 %build
 install /usr/share/automake/config.* .
+%{__gettextize}
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	--with-snmp-lib-dir=%{_libdir}
 %{__make}
@@ -62,6 +69,7 @@ mv -f $RPM_BUILD_ROOT/var/www/%{name} $RPM_BUILD_ROOT%{_wwwrootdir}/%{name}
 touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.err
 touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.log
 touch $RPM_BUILD_ROOT/var/log/%{name}/runtime
+mv $RPM_BUILD_ROOT%{_docdir}/netmrg-0.19cvs $RPM_BUILD_ROOT%{_docdir}/netmrg-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
