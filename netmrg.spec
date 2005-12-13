@@ -15,14 +15,14 @@ Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
 URL:		http://www.netmrg.net/
 BuildRequires:	automake
-BuildRequires:	mysql-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	rrdtool-devel >= 1.2.10
+BuildRequires:	mysql-devel
 BuildRequires:	net-snmp-devel
-PreReq:		webserver
+BuildRequires:	rrdtool-devel >= 1.2.10
 Requires:	libxml2
-Requires:	rrdtool >= 1.2.10
 Requires:	php-mysql
+Requires:	rrdtool >= 1.2.10
+Requires:	webserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir		/var/lib/%{name}
@@ -61,7 +61,8 @@ install /usr/share/automake/config.* .
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_wwwrootdir}
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
 install -D %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/%{name}
@@ -108,9 +109,9 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc %{_docdir}/%{name}-%{version}
-%attr(640,root,root) %{_sysconfdir}/cron.d/netmrg
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/netmrg.xml
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
+%attr(640,root,root) /etc/cron.d/netmrg
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/netmrg.xml
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/%{name}.conf
 %attr(755,root,root) %{_bindir}/netmrg-gatherer
 %attr(755,root,root) %{_bindir}/rrdedit
 %{_datadir}/%{name}
