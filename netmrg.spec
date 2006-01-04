@@ -1,10 +1,15 @@
+# TODO
+# - use webapps
+# warning: Installed (but unpackaged) file(s) found:
+#   /etc/netmrg.conf
 %define		snap	051123
 %define		snapd	2005.11.23
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl):	Monitor sieci u¿ywaj±cy PHP, MySQL i RRDtool
 Name:		netmrg
 Version:	0.18.2
-Release:	1.%{snap}.3
+%define	_rel 3
+Release:	1.%{snap}.%{_rel}
 License:	MIT
 Group:		Applications/Networking
 #Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
@@ -14,6 +19,7 @@ Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
 URL:		http://www.netmrg.net/
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	automake
 BuildRequires:	libxml2-devel
 BuildRequires:	mysql-devel
@@ -81,14 +87,13 @@ if [ -f /etc/httpd/httpd.conf ] && ! grep -q "^Include.*%{name}.conf" /etc/httpd
 elif [ -d /etc/httpd/httpd.conf ]; then
 	mv -f /etc/httpd/%{name}.conf /etc/httpd/httpd.conf/99_%{name}.conf
 fi
-if [ -f /var/lock/subsys/httpd ]; then
-	/etc/rc.d/init.d/httpd restart 1>&2
-fi
+%service httpd reload
+%service crond restart
 if [ -f /var/lock/subsys/crond ]; then
 	/etc/rc.d/init.d/crond restart 1>&2
 fi
-echo "Before first run read /usr/share/doc/%{name}-%{version}/INSTALL how to put
-/usr/share/netmrg/db/netmrg.mysql in your mysql server"
+echo "Before first run read %{_docdir}/%{name}-%{version}/INSTALL how to put
+%{_datadir}/netmrg/db/netmrg.mysql in your mysql server"
 
 
 %preun
@@ -100,9 +105,7 @@ if [ "$1" = "0" ]; then
 		grep -v "^Include.*%{name}.conf" /etc/httpd/httpd.conf > \
 			etc/httpd/httpd.conf.tmp
 		mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
-		if [ -f /var/lock/subsys/httpd ]; then
-			/usr/sbin/apachectl restart 1>&2
-		fi
+		%service httpd reload
 	fi
 fi
 
