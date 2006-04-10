@@ -2,19 +2,15 @@
 # - use webapps
 # warning: Installed (but unpackaged) file(s) found:
 #   /etc/netmrg.conf
-%define		snap	051123
-%define		snapd	2005.11.23
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl):	Monitor sieci u¿ywaj±cy PHP, MySQL i RRDtool
 Name:		netmrg
-Version:	0.18.2
-%define	_rel 3
-Release:	1.%{snap}.%{_rel}
+Version:	0.19
+Release:	1
 License:	MIT
 Group:		Applications/Networking
-#Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
-Source0:	http://www.netmrg.net/download/snapshot/%{name}-%{snapd}.tar.gz
-# Source0-md5:	f122132e76cbe10e259bcd8fc4ab84d0
+Source0:	http://www.netmrg.net/download/devel/%{name}-%{version}.tar.gz
+# Source0-md5:	a380390425f8f97cadaee3809042ca51
 Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
@@ -48,7 +44,7 @@ graficznych o dostêpnym kodzie ¼ród³owym. NetMRG potrafi tworzyæ
 wykresy przedstawiaj±ce dowolne parametry sieci.
 
 %prep
-%setup -q -n %{name}-%{snapd}
+%setup -q
 %patch0 -p1
 
 %build
@@ -76,7 +72,6 @@ mv -f $RPM_BUILD_ROOT/var/www/%{name} $RPM_BUILD_ROOT%{_wwwrootdir}/%{name}
 touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.err
 touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.log
 touch $RPM_BUILD_ROOT/var/log/%{name}/runtime
-mv $RPM_BUILD_ROOT%{_docdir}/netmrg-0.19cvs $RPM_BUILD_ROOT%{_docdir}/netmrg-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
