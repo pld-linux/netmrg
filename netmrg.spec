@@ -15,14 +15,14 @@ Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
 URL:		http://www.netmrg.net/
-BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	automake
 BuildRequires:	libxml2-devel
 BuildRequires:	mysql-devel
 BuildRequires:	net-snmp-devel
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	rrdtool-devel >= 1.2.10
 Requires:	libxml2
-Requires:	php-mysql
+Requires:	php(mysql)
 Requires:	rrdtool >= 1.2.10
 Requires:	webserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
