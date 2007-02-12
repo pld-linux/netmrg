@@ -3,7 +3,7 @@
 # warning: Installed (but unpackaged) file(s) found:
 #   /etc/netmrg.conf
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
-Summary(pl):	Monitor sieci u¿ywaj±cy PHP, MySQL i RRDtool
+Summary(pl.UTF-8):   Monitor sieci uÅ¼ywajÄ…cy PHP, MySQL i RRDtool
 Name:		netmrg
 Version:	0.19
 Release:	2
@@ -37,11 +37,11 @@ NetMRG is a tool for network monitoring, reporting, and graphing.
 Based on RRDTOOL, the best of open source graphing systems, NetMRG is
 capable of creating graphs of any parameter of your network.
 
-%description -l pl
-NetMRG s³u¿y do monitorowania sieci, raportowania i kre¶lenia
-wykresów. Jest on oparty na RRDTOOL, najlepszym spo¶ród systemów
-graficznych o dostêpnym kodzie ¼ród³owym. NetMRG potrafi tworzyæ
-wykresy przedstawiaj±ce dowolne parametry sieci.
+%description -l pl.UTF-8
+NetMRG sÅ‚uÅ¼y do monitorowania sieci, raportowania i kreÅ›lenia
+wykresÃ³w. Jest on oparty na RRDTOOL, najlepszym spoÅ›rÃ³d systemÃ³w
+graficznych o dostÄ™pnym kodzie ÅºrÃ³dÅ‚owym. NetMRG potrafi tworzyÄ‡
+wykresy przedstawiajÄ…ce dowolne parametry sieci.
 
 %prep
 %setup -q
