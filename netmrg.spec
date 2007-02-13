@@ -3,7 +3,7 @@
 # warning: Installed (but unpackaged) file(s) found:
 #   /etc/netmrg.conf
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
-Summary(pl.UTF-8):   Monitor sieci używający PHP, MySQL i RRDtool
+Summary(pl.UTF-8):	Monitor sieci używający PHP, MySQL i RRDtool
 Name:		netmrg
 Version:	0.19
 Release:	2
