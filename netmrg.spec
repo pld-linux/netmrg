@@ -90,7 +90,6 @@ fi
 echo "Before first run read %{_docdir}/%{name}-%{version}/INSTALL how to put
 %{_datadir}/netmrg/db/netmrg.mysql in your mysql server"
 
-
 %preun
 if [ "$1" = "0" ]; then
 	umask 027
@@ -114,10 +113,10 @@ fi
 %attr(755,root,root) %{_bindir}/rrdedit
 %{_datadir}/%{name}
 %dir %{_pkglibdir}
-%attr(700,http,http) %dir %{_pkglibdir}/rrd
-%attr(700,http,http) %{_pkglibdir}/rrd/*
-%attr(770,http,http) %dir /var/log/netmrg
-%attr(660,http,http) /var/log/netmrg/*
+%attr(770,root,http) %dir %{_pkglibdir}/rrd
+%attr(770,root,http) %{_pkglibdir}/rrd/*
+%attr(770,root,http) %dir /var/log/netmrg
+%attr(660,root,http) /var/log/netmrg/*
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
 %{_mandir}/*/*
