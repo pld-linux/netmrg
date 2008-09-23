@@ -100,6 +100,37 @@ rm -rf $RPM_BUILD_ROOT
 %triggerun -- apache < 2.2.0, apache-base
 %webapp_unregister httpd %{_webapp}
 
+%triggerpostun -- netmrg < 0.20
+# rescue app config from old location (with old paths, but good MySQL password)
+if [ -f /etc/netmrg.xml.rpmsave ]; then
+	mv -f %{_sysconfdir}/netmrg.xml{,.rpmnew}
+	mv -f /etc/netmrg.xml.rpmsave %{_sysconfdir}/netmrg.xml
+fi
+
+# nuke very-old config location (this mostly for Ra)
+if [ -f /etc/httpd/httpd.conf ]; then
+	sed -i -e "/^Include.*%{name}.conf/d" /etc/httpd/httpd.conf
+	httpd_reload=1
+fi
+
+# migrate from httpd (apache2) config dir
+if [ -f /etc/httpd/%{name}.conf.rpmsave ]; then
+	mv -f %{_sysconfdir}/httpd.conf{,.rpmnew}
+	mv -f /etc/httpd/%{name}.conf.rpmsave %{_sysconfdir}/httpd.conf
+	httpd_reload=1
+fi
+if [ -f /etc/httpd/httpd.conf/99_%{name}.conf ]; then
+	mv -f %{_sysconfdir}/httpd.conf{,.rpmnew}
+	mv -f /etc/httpd/httpd.conf/99_%{name}.conf %{_sysconfdir}/httpd.conf
+fi
+
+if [ -d /etc/httpd/webapps.d ]; then
+	/usr/sbin/webapp register httpd %{_webapp}
+	httpd_reload=1
+fi
+
+[ -n "$httpd_reload" ] && %service -q httpd reload
+
 %post
 %service crond restart
 
