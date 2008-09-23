@@ -11,7 +11,7 @@ Release:	1
 License:	MIT
 Group:		Applications/Networking
 Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
-# Source0-md5:	a380390425f8f97cadaee3809042ca51
+# Source0-md5:	47bec3b8a4d3a5c06c70925ee8d280be
 Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
