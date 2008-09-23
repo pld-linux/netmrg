@@ -10,7 +10,7 @@
  		<libexec>@libexecdir@/netmrg</libexec>
  		<rrds>@localstatedir@/lib/netmrg/rrd</rrds>
 -		<webfileroot>@localstatedir@/www/netmrg</webfileroot>
-+		<webfileroot>@datadir@/netmrg/webfiles</webfileroot>
++		<webfileroot>@datadir@/netmrg</webfileroot>
  		<locale>@datarootdir@/netmrg/locale</locale>
  	</paths>
  	<threads>
