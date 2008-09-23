@@ -1,0 +1,11 @@
+--- configure.ac.orig	2008-03-27 01:55:37.000000000 +0100
++++ configure.ac	2008-09-23 14:30:28.000000000 +0200
+@@ -197,7 +197,7 @@
+ 
+ # now that we've found the libraries, check for MySQL < 4.0
+ MYSQL_VERSION=$($MYSQL_CONFIG --version)
+-if test "x${MYSQL_VERSION//.*/}" = "x3"; then
++if test "$MYSQL_VERSION" != "${MYSQL_VERSION#3}"; then
+ 	AC_DEFINE(OLD_MYSQL, 1, [Old MySQL version])
+ fi
+ 
