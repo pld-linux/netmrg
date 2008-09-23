@@ -1,36 +1,42 @@
 # TODO
-# - use webapps
-# warning: Installed (but unpackaged) file(s) found:
-#   /etc/netmrg.conf
+#	- lighttpd config file (and webapp trigger)
+#	- create netmrg user/group to run as
+#	- cron/standalone subpackages
+#	- logrotate file
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl.UTF-8):	Monitor sieci używający PHP, MySQL i RRDtool
 Name:		netmrg
-Version:	0.19
-Release:	3
+Version:	0.20
+Release:	1
 License:	MIT
 Group:		Applications/Networking
-Source0:	http://www.netmrg.net/download/devel/%{name}-%{version}.tar.gz
+Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
 # Source0-md5:	a380390425f8f97cadaee3809042ca51
 Source1:	%{name}-httpd.conf
 Source2:	%{name}-cron
 Patch0:		%{name}-config.patch
+Patch1:		%{name}-bashizm.patch
 URL:		http://www.netmrg.net/
+BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	mysql-devel
 BuildRequires:	net-snmp-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	rrdtool-devel >= 1.2.10
+BuildRequires:	sed >= 4.0
 Requires:	libxml2
 Requires:	php(mysql)
 Requires:	rrdtool >= 1.2.10
 Requires:	webserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		_appdir			%{_datadir}/%{name}
 %define		_pkglibdir		/var/lib/%{name}
-%define		_wwwuser		http
-%define		_wwwgroup		http
-%define		_wwwrootdir		%{_datadir}/%{name}/webfiles
+%define		_webapps		/etc/webapps
+%define		_webapp			%{name}
+%define		_sysconfdir		%{_webapps}/%{_webapp}
 
 %description
 NetMRG is a tool for network monitoring, reporting, and graphing.
@@ -46,77 +52,84 @@ wykresy przedstawiające dowolne parametry sieci.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p0
 
 %build
 install /usr/share/automake/config.* .
 %{__gettextize}
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
 %configure \
-	--with-snmp-lib-dir=%{_libdir}
+	--with-snmp-lib-dir=%{_libdir} \
+	--with-www-dir=%{_appdir}
 %{__make}
+sed -i -e '1s|^#!/usr/bin/php |#!/usr/bin/php.cli |' libexec/*.php
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_wwwrootdir}
+install -d $RPM_BUILD_ROOT/etc/cron.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
-install -D %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/cron.d/%{name}
-mv -f $RPM_BUILD_ROOT/var/www/%{name} $RPM_BUILD_ROOT%{_wwwrootdir}/%{name}
-touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.err
-touch $RPM_BUILD_ROOT/var/log/%{name}/lastrun.log
-touch $RPM_BUILD_ROOT/var/log/%{name}/runtime
+install www/include/config_site-dist.php $RPM_BUILD_ROOT%{_sysconfdir}/config_site.php
+ln -s %{_sysconfdir}/config_site.php $RPM_BUILD_ROOT%{_appdir}/include
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/cron.d/%{name}
+rm -rf $RPM_BUILD_ROOT{%{_sysconfdir}/netmrg.conf,%{_bindir}/rrdedit,%{_appdir}/{contrib,db}}
+:> $RPM_BUILD_ROOT/var/log/%{name}/lastrun.err
+:> $RPM_BUILD_ROOT/var/log/%{name}/lastrun.log
+:> $RPM_BUILD_ROOT/var/log/%{name}/runtime
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-if [ -f /etc/httpd/httpd.conf ] && ! grep -q "^Include.*%{name}.conf" /etc/httpd/httpd.conf; then
-	echo "Include /etc/httpd/%{name}.conf" >> /etc/httpd/httpd.conf
-elif [ -d /etc/httpd/httpd.conf ]; then
-	mv -f /etc/httpd/%{name}.conf /etc/httpd/httpd.conf/99_%{name}.conf
-fi
-%service httpd reload
-%service crond restart
-if [ -f /var/lock/subsys/crond ]; then
-	/etc/rc.d/init.d/crond restart 1>&2
-fi
-echo "Before first run read %{_docdir}/%{name}-%{version}/INSTALL how to put
-%{_datadir}/netmrg/db/netmrg.mysql in your mysql server"
+%triggerin -- apache1 < 1.3.37-3, apache1-base
+%webapp_register apache %{_webapp}
 
-%preun
-if [ "$1" = "0" ]; then
-	umask 027
-	if [ -d /etc/httpd/httpd.conf ]; then
-		rm -f /etc/httpd/httpd.conf/99_%{name}.conf
-	else
-		grep -v "^Include.*%{name}.conf" /etc/httpd/httpd.conf > \
-			etc/httpd/httpd.conf.tmp
-		mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
-		%service httpd reload
-	fi
+%triggerun -- apache1 < 1.3.37-3, apache1-base
+%webapp_unregister apache %{_webapp}
+
+%triggerin -- apache < 2.2.0, apache-base
+%webapp_register httpd %{_webapp}
+
+%triggerun -- apache < 2.2.0, apache-base
+%webapp_unregister httpd %{_webapp}
+
+%post
+%service crond restart
+
+if [ "$1" = 1 ]; then
+	%banner -e %{name} << EOF
+	You must create MySQL database for NetMRG. Running these should be fine in most cases:
+	mysqladmin create netmrg
+	zcat %{_docdir}/%{name}-%{version}/netmrg.mysql.gz | mysql -u mysql -p netmrg
+	mysql -u mysql -p
+> grant all on netmrg.* to netmrguser@localhost identified by 'netmrgpass';
+EOF
 fi
 
 %files
 %defattr(644,root,root,755)
-%doc %{_docdir}/%{name}-%{version}
-%attr(640,root,root) /etc/cron.d/netmrg
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/netmrg.xml
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/%{name}.conf
+%doc bin/rrdedit contrib etc/init.d-netmrg libexec/linuxload.sh libexec/snmpdiff.sh
+%doc share/doc/html share/doc/txt/netmrg.txt share/doc/ChangeLog share/doc/TODO share/doc/VERSION share/doc/netmrg.sgml share/doc/rrdworld.xml
+%doc share/netmrg.mysql README RELEASE-NOTES UPGRADE
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/cron.d/%{name}
+%attr(750,root,http) %dir %{_sysconfdir}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.conf
+%attr(644,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config_site.php
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/netmrg.xml
 %attr(755,root,root) %{_bindir}/netmrg-gatherer
-%attr(755,root,root) %{_bindir}/rrdedit
-%{_datadir}/%{name}
-%dir %{_pkglibdir}
-%attr(770,root,http) %dir %{_pkglibdir}/rrd
-%attr(770,root,http) %{_pkglibdir}/rrd/*
-%attr(770,root,http) %dir /var/log/netmrg
-%attr(660,root,http) /var/log/netmrg/*
+%{_appdir}
 %dir %{_libdir}/%{name}
 %attr(755,root,root) %{_libdir}/%{name}/*
+%dir %{_pkglibdir}
+%attr(770,root,http) %dir %{_pkglibdir}/rrd
+%attr(660,root,http) %{_pkglibdir}/rrd/*
+%attr(770,root,http) %dir /var/log/netmrg
+%attr(660,root,http) %verify(not md5 mtime size) /var/log/netmrg/*
 %{_mandir}/*/*
