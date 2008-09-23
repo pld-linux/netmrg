@@ -5,7 +5,7 @@
  	<paths>
  		<rrdtool>@RRDTOOL@</rrdtool>
 -		<lockfile>@localstatedir@/log/netmrg/lockfile</lockfile>
-+		<lockfile>@localstatedir@/run/netmrg</lockfile>
++		<lockfile>@localstatedir@/run/netmrg/lockfile</lockfile>
  		<runtimefile>@localstatedir@/log/netmrg/runtime</runtimefile>
  		<libexec>@libexecdir@/netmrg</libexec>
  		<rrds>@localstatedir@/lib/netmrg/rrd</rrds>
@@ -29,7 +29,7 @@
  // Paths
  #define DEF_CONFIG_FILE     "@sysconfdir@/netmrg.xml"
 -#define DEF_LOCKFILE        "@localstatedir@/log/netmrg/lockfile"
-+#define DEF_LOCKFILE        "@localstatedir@/run/netmrg"
++#define DEF_LOCKFILE        "@localstatedir@/run/netmrg/lockfile"
  #define DEF_RUNTIME_FILE    "@localstatedir@/log/netmrg/runtime"
  #define DEF_RRDTOOL         "@RRDTOOL@"
  #define DEF_RRDS            "@localstatedir@/lib/netmrg/rrd"
