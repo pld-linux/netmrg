@@ -84,6 +84,7 @@ rm -rf $RPM_BUILD_ROOT{%{_sysconfdir}/netmrg.conf,%{_bindir}/rrdedit,%{_appdir}/
 :> $RPM_BUILD_ROOT/var/log/%{name}/lastrun.err
 :> $RPM_BUILD_ROOT/var/log/%{name}/lastrun.log
 :> $RPM_BUILD_ROOT/var/log/%{name}/runtime
+mkdir -p $RPM_BUILD_ROOT/var/run/netmrg
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -163,4 +164,5 @@ fi
 %attr(660,root,http) %{_pkglibdir}/rrd/*
 %attr(770,root,http) %dir /var/log/netmrg
 %attr(660,root,http) %verify(not md5 mtime size) /var/log/netmrg/*
+%attr(770,root,http) %dir /var/run/%{name}
 %{_mandir}/*/*
