@@ -22,3 +22,14 @@
 +		<version>1.2.15</version>
  	</rrdtool>
  </netmrg>
+--- netmrg/src/include/netmrg.h.in.orig	2008-03-27 01:55:37.000000000 +0100
++++ netmrg/src/include/netmrg.h.in	2008-09-23 18:10:04.000000000 +0200
+@@ -23,7 +23,7 @@
+ 
+ // Paths
+ #define DEF_CONFIG_FILE     "@sysconfdir@/netmrg.xml"
+-#define DEF_LOCKFILE        "@localstatedir@/log/netmrg/lockfile"
++#define DEF_LOCKFILE        "@localstatedir@/run/netmrg"
+ #define DEF_RUNTIME_FILE    "@localstatedir@/log/netmrg/runtime"
+ #define DEF_RRDTOOL         "@RRDTOOL@"
+ #define DEF_RRDS            "@localstatedir@/lib/netmrg/rrd"
