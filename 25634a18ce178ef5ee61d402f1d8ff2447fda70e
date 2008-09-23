@@ -1,0 +1,5 @@
+- upgraded to 0.20,
+- added missing BRs and TODOs, use %%banner
+- better /var/*/** permissions
+- repackaged files (FHS compliance, PLD policy)
+- switched to webapps
