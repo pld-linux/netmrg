@@ -1,2 +1,2 @@
 # vim:syn=crontab
-*/5 * * * *	http	[ ! -f /var/run/netmrg ] && /usr/bin/netmrg-gatherer -S -q 2>/dev/null
+*/5 * * * *	http	[ ! -f /var/run/netmrg/lockfile ] && /usr/bin/netmrg-gatherer -q 2>/dev/null
