@@ -1,7 +1,7 @@
 # TODO
 #	- lighttpd config file (and webapp trigger)
-#	- create netmrg user/group to run as
-#	- cron/standalone subpackages
+#	- create netmrg user/group to run as (or use stats)
+#	- cron/standalone subpackages, split webapp from gatherer
 #	- logrotate file
 Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl.UTF-8):	Monitor sieci używający PHP, MySQL i RRDtool
