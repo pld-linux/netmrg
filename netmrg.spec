@@ -30,6 +30,7 @@ Requires:	php(mysql)
 Requires:	php-common >= 3:4.1
 Requires:	rrdtool >= 1.2.10
 Requires:	webserver
+Requires:	webserver(php)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_appdir			%{_datadir}/%{name}
