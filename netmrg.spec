@@ -27,6 +27,7 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	rrdtool-devel >= 1.2.10
 Requires:	libxml2
 Requires:	php(mysql)
+Requires:	php-common >= 3:4.1
 Requires:	rrdtool >= 1.2.10
 Requires:	webserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -82,7 +83,7 @@ rm -rf $RPM_BUILD_ROOT{%{_sysconfdir}/netmrg.conf,%{_bindir}/rrdedit,%{_appdir}/
 :> $RPM_BUILD_ROOT/var/log/%{name}/lastrun.err
 :> $RPM_BUILD_ROOT/var/log/%{name}/lastrun.log
 :> $RPM_BUILD_ROOT/var/log/%{name}/runtime
-mkdir -p $RPM_BUILD_ROOT/var/run/netmrg
+install -d $RPM_BUILD_ROOT/var/run/netmrg
 
 %clean
 rm -rf $RPM_BUILD_ROOT
