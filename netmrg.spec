@@ -25,7 +25,6 @@ BuildRequires:	mysql-devel
 BuildRequires:	net-snmp-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	rrdtool-devel >= 1.2.10
-BuildRequires:	sed >= 4.0
 Requires:	libxml2
 Requires:	php(mysql)
 Requires:	rrdtool >= 1.2.10
@@ -66,7 +65,6 @@ install /usr/share/automake/config.* .
 	--with-snmp-lib-dir=%{_libdir} \
 	--with-www-dir=%{_appdir}
 %{__make}
-sed -i -e '1s|^#!/usr/bin/php |#!/usr/bin/php.cli |' libexec/*.php
 
 %install
 rm -rf $RPM_BUILD_ROOT
