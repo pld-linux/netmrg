@@ -7,7 +7,7 @@ Summary:	Network Monitoring package using PHP, MySQL, and RRDtool
 Summary(pl.UTF-8):	Monitor sieci używający PHP, MySQL i RRDtool
 Name:		netmrg
 Version:	0.20
-Release:	1
+Release:	2
 License:	MIT
 Group:		Applications/Networking
 Source0:	http://www.netmrg.net/download/release/%{name}-%{version}.tar.gz
@@ -27,6 +27,7 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	rrdtool-devel >= 1.2.10
 Requires:	libxml2
 Requires:	php(mysql)
+Requires:	php(session)
 Requires:	php-common >= 3:4.1
 Requires:	rrdtool >= 1.2.10
 Requires:	webserver
